@@ -6,7 +6,8 @@ WORKDIR /app
 ADD /src/requirements.txt .
 ADD /src/repository.py .
 ADD /src/main.py .
-ADD .env .
+# Uncomment the following line to use a local copy of the .env file
+# ADD .env . 
 
 RUN apt-get update -y && apt-get install -y curl gnupg g++ unixodbc-dev
 RUN curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add -
