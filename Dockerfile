@@ -23,4 +23,9 @@ RUN cat /etc/odbc.ini
 
 RUN pip install --upgrade -r requirements.txt
 
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
+# For running the container locally 
+# CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
+
+# For running the container in Azure App Service
+#gunicorn -w 2 -k uvicorn.workers.UvicornWorker main:app
+CMD ["gunicorn", "-w", "4", "-k", "uvicorn.workers.UvicornWorker", "main:app"]

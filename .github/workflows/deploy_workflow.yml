@@ -38,6 +38,17 @@ jobs:
       url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
 
     steps:
+    - name: Azure Login
+      uses: azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIAL }}
+
+    - name: 'Allow basic publishing credentials access'
+      uses: azure/CLI@v1
+      with:
+        inlineScript: |
+          az resource update --resource-group article --name scm --namespace Microsoft.Web --resource-type basicPublishingCredentialsPolicies --parent sites/mywebappv2 --set properties.allow=true
+
     - name: Deploy to Azure Web App
       id: deploy-to-webapp
       uses: azure/webapps-deploy@v2
