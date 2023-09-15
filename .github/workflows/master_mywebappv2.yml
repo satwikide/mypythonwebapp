@@ -22,15 +22,15 @@ jobs:
     - name: Log in to registry
       uses: docker/login-action@v2
       with:
-        registry: https://mcr.microsoft.com/
-        username: ${{ secrets.AzureAppService_ContainerUsername_06d6bf0ac5df420884ea550ffe3ffb11 }}
-        password: ${{ secrets.AzureAppService_ContainerPassword_d12e7c05d47c4755b3bdbc86c6af9745 }}
+        registry: https://pythonappsregistry.azurecr.io/
+        username: ${{ secrets.AzureAppService_ContainerUsername_8a6595755c0145cb936a28ee2681465d }}
+        password: ${{ secrets.AzureAppService_ContainerPassword_0145ba97164148efb1ef1bbdabee1059 }}
 
     - name: Build and push container image to registry
       uses: docker/build-push-action@v3
       with:
         push: true
-        tags: mcr.microsoft.com/${{ secrets.AzureAppService_ContainerUsername_06d6bf0ac5df420884ea550ffe3ffb11 }}/todolist-app:${{ github.sha }}
+        tags: pythonappsregistry.azurecr.io/${{ secrets.AzureAppService_ContainerUsername_8a6595755c0145cb936a28ee2681465d }}/samples/todolist-app:${{ github.sha }}
         file: ./Dockerfile
 
   deploy:
@@ -47,5 +47,5 @@ jobs:
       with:
         app-name: 'mywebappv2'
         slot-name: 'production'
-        publish-profile: ${{ secrets.AzureAppService_PublishProfile_2521816df5a644b3b64ea1a4ad780fe6 }}
-        images: 'mcr.microsoft.com/${{ secrets.AzureAppService_ContainerUsername_06d6bf0ac5df420884ea550ffe3ffb11 }}/todolist-app:${{ github.sha }}'
+        publish-profile: ${{ secrets.AzureAppService_PublishProfile_5e8343a34c2b48459aec1416f3fc8e78 }}
+        images: 'pythonappsregistry.azurecr.io/${{ secrets.AzureAppService_ContainerUsername_8a6595755c0145cb936a28ee2681465d }}/samples/todolist-app:${{ github.sha }}'
