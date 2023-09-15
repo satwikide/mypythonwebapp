@@ -27,5 +27,22 @@ jobs:
       uses: docker/build-push-action@v3
       with:
         push: true
-        tags: pythonappsregistry.azurecr.io/${{ secrets.AZURE_CONTAINER_CLIENT_ID }}/samples/todolist-app:${{ github.sha }}
+        tags: pythonappsregistry.azurecr.io/builds/todolist-app:${{ github.sha }}
         file: ./Dockerfile
+  
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build
+    environment:
+      name: 'production'
+      url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
+
+    steps:
+    - name: Deploy to Azure Web App
+      id: deploy-to-webapp
+      uses: azure/webapps-deploy@v2
+      with:
+        app-name: 'mywebappv2'
+        slot-name: 'production'
+        publish-profile: ${{ secrets.MYWEBAPPV2_PUBLISH_PROFILE }}
+        images: 'pythonappsregistry.azurecr.io/builds/todolist-app:${{ github.sha }}'
