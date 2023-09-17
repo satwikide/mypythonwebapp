@@ -1,6 +1,8 @@
 # parent image
 FROM python:3.10.9-slim-buster
 
+EXPOSE 8000
+
 WORKDIR /app
 
 ADD /src/requirements.txt .
@@ -28,4 +30,5 @@ RUN pip install --upgrade -r requirements.txt
 
 # For running the container in Azure App Service
 #gunicorn -w 2 -k uvicorn.workers.UvicornWorker main:app
-CMD ["gunicorn", "-w", "4", "-k", "uvicorn.workers.UvicornWorker", "main:app"]
+# CMD ["gunicorn", "-w", "4", "-k", "uvicorn.workers.UvicornWorker", "main:app"]
+CMD ["gunicorn", "--bind", "0.0.0.0:8000", "main:app"]
