@@ -6,18 +6,6 @@ on:
       - master
   workflow_dispatch:
 
-env:
-  # Container registry service connection established during pipeline creation
-  azureContainerRegistryName: 'pythonappsregistry'
-  # Web app name
-  webAppName: 'mycontainersampleapp'
-  # Resource group
-  resourceGroupName: 'article'
-  # Image name
-  imageName: 'todolist-app'
-  # FQDN
-  fqdn: 'mycontainersampleapp.azurewebsites.net'
-
 jobs:
   build:
     runs-on: 'ubuntu-latest'
@@ -31,7 +19,7 @@ jobs:
     - name: Log in to registry
       uses: docker/login-action@v2
       with:
-        registry: 'https://$azureContainerRegistryName.azurecr.io/'
+        registry: https://pythonappsregistry.azurecr.io/
         username: ${{ secrets.AZURE_CONTAINER_CLIENT_ID }}
         password: ${{ secrets.AZURE_CONTAINER_CLIENT_SECRET }}
 
@@ -39,7 +27,7 @@ jobs:
       uses: docker/build-push-action@v3
       with:
         push: true
-        tags: '$azureContainerRegistryName.azurecr.io/builds/todolist-app:${{ github.sha }}'
+        tags: pythonappsregistry.azurecr.io/builds/todolist-app:${{ github.sha }}
         file: ./Dockerfile
   
   deploy:
@@ -60,14 +48,14 @@ jobs:
       with:
         inlineScript: |
           az resource update --resource-group article --name scm --namespace Microsoft.Web \
-          --resource-type basicPublishingCredentialsPolicies --parent sites/$webAppName \
+          --resource-type basicPublishingCredentialsPolicies --parent sites/mycontainersampleapp \
           --set properties.allow=true
 
     - name: Deploy to Azure Web App
       id: deploy-to-webapp
       uses: azure/webapps-deploy@v2
       with:
-        app-name: '$webAppName'
+        app-name: 'mycontainersampleapp'
         slot-name: 'production'
         publish-profile: ${{ secrets.MYCONTAINERSAMPLEAPP_PUBLISH_PROFILE }}
-        images: '$azureContainerRegistryName.azurecr.io/builds/todolist-app:${{ github.sha }}'
+        images: 'pythonappsregistry.azurecr.io/builds/todolist-app:${{ github.sha }}'
