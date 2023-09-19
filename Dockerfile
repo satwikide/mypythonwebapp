@@ -7,7 +7,7 @@ WORKDIR /app
 
 ADD /src/requirements.txt .
 ADD /src/repository.py .
-ADD /src/main.py .
+ADD /src/wsgi.py .
 # Uncomment the following line to use a local copy of the .env file
 # ADD .env . 
 
@@ -26,6 +26,6 @@ RUN cat /etc/odbc.ini
 RUN pip install --upgrade -r requirements.txt
 
 # For running the container locally 
-# CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
+# CMD ["uvicorn", "wsgi:app", "--host", "0.0.0.0", "--port", "8000"]
 
 CMD ["gunicorn", "--bind", "0.0.0.0:8000", "wsgi:app"]
