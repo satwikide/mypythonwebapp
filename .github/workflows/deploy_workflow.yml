@@ -1,4 +1,4 @@
-name: Build and deploy container app to Azure Web App - mywebappv2
+name: Build and deploy python container app to Azure Web App
 
 on:
   push:
@@ -47,13 +47,15 @@ jobs:
       uses: azure/CLI@v1
       with:
         inlineScript: |
-          az resource update --resource-group article --name scm --namespace Microsoft.Web --resource-type basicPublishingCredentialsPolicies --parent sites/mywebappv2 --set properties.allow=true
+          az resource update --resource-group article --name scm --namespace Microsoft.Web \
+          --resource-type basicPublishingCredentialsPolicies --parent sites/mycontainersampleapp \
+          --set properties.allow=true
 
     - name: Deploy to Azure Web App
       id: deploy-to-webapp
       uses: azure/webapps-deploy@v2
       with:
-        app-name: 'mywebappv2'
+        app-name: 'mycontainersampleapp'
         slot-name: 'production'
-        publish-profile: ${{ secrets.MYWEBAPPV2_PUBLISH_PROFILE }}
+        publish-profile: ${{ secrets.MYCONTAINERSAMPLEAPP_PUBLISH_PROFILE }}
         images: 'pythonappsregistry.azurecr.io/builds/todolist-app:${{ github.sha }}'
