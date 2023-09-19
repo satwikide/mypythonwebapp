@@ -8,7 +8,7 @@ on:
 
 env:
   # Container registry service connection established during pipeline creation
-  azureContainerRegistry: 'pythonappsregistry.azurecr.io'
+  azureContainerRegistryName: 'pythonappsregistry'
   # Web app name
   webAppName: 'mycontainersampleapp'
   # Resource group
@@ -31,7 +31,7 @@ jobs:
     - name: Log in to registry
       uses: docker/login-action@v2
       with:
-        registry: https://$azureContainerRegistry/
+        registry: 'https://$azureContainerRegistryName.azurecr.io/'
         username: ${{ secrets.AZURE_CONTAINER_CLIENT_ID }}
         password: ${{ secrets.AZURE_CONTAINER_CLIENT_SECRET }}
 
@@ -39,7 +39,7 @@ jobs:
       uses: docker/build-push-action@v3
       with:
         push: true
-        tags: $azureContainerRegistry/builds/todolist-app:${{ github.sha }}
+        tags: '$azureContainerRegistryName.azurecr.io/builds/todolist-app:${{ github.sha }}'
         file: ./Dockerfile
   
   deploy:
@@ -70,4 +70,4 @@ jobs:
         app-name: '$webAppName'
         slot-name: 'production'
         publish-profile: ${{ secrets.MYCONTAINERSAMPLEAPP_PUBLISH_PROFILE }}
-        images: '$azureContainerRegistry/builds/todolist-app:${{ github.sha }}'
+        images: '$azureContainerRegistryName.azurecr.io/builds/todolist-app:${{ github.sha }}'
