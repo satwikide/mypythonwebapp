@@ -28,4 +28,4 @@ RUN pip install --upgrade -r requirements.txt
 # For running the container locally 
 # CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
 
-CMD ["gunicorn", "--bind", "0.0.0.0:8000", "main:app"]
+CMD ["gunicorn", "--bind", "0.0.0.0:8000", "wsgi:app"]
